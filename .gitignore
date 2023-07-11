@@ -130,7 +130,6 @@ dist
 .pnp.*
 
 #jorge-test
-compressed.xlsx
-Clockify_Time_Report_Detailed_06_01_2023-06_30_2023_1.xlsx
+*.xlsx
 package-lock.json
 package.json
