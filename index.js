@@ -1,1 +1,1 @@
-throw new Error("Programa en construcción. Próximamente.");
+console.log("Programa en construcción. Próximamente.");
