@@ -1,0 +1,15 @@
+{
+  "testing": true,
+  "host": "127.0.0.1",
+  "puertos": {
+    "ssh": 22,
+    "http": 80,
+    "httpSecundario": 1111,
+    "db": 3306
+  },
+  "db": {
+    "usuario": "root",
+    "password": "admin",
+    "baseDatos": "sistema"
+  }
+}
