@@ -133,3 +133,4 @@ dist
 *.xlsx
 package-lock.json
 package.json
+launch.json
