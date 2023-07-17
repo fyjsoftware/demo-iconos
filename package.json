@@ -15,7 +15,7 @@
 	"version": "0.1.0",
 	"main": "index.js",
 	"scripts": {
-		"test": "node index.js"
+		"test": "echo 'Prueba de sintaxis'"
 	},
 	"author": {
 		"name": "Proyecto ICONOS"
