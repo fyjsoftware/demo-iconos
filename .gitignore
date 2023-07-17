@@ -128,3 +128,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# PROYECTO: No subir la configuración
+config.json
+
+# PROYECTO: No subir archivos caché del logger
+.*.json

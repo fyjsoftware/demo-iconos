@@ -1,0 +1,12 @@
+{
+    "host": "",
+    "puertos": {
+        "http": 80,
+        "db": 3306
+    },
+    "db": {
+        "usuario": "",
+        "password": "",
+        "baseDatos": ""
+    }
+}
