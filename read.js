@@ -99,21 +99,32 @@ function sendData(...args) {
   let index = 0;
   for (let index = 0; index < proyecto.length; index++) {
     db.addRow(
-      proyecto[index],
-      cliente[index],
-      usuario[index],
-      tags[index],
+      parseData(proyecto[index]),
+      parseData(cliente[index]),
+      parseData(usuario[index]),
+      parseTags(tags[index]),
       parseDate(fechaIn[index]),
       parseDate(fechaFin[index]),
       parseTime(horaIn[index]),
       parseTime(horaFin[index]),
-      duracion[index]
+      parseData(duracion[index]),
+      index + 1
     );
   }
 }
 
+function parseData(data) {
+  if (data == ``) {
+    return null;
+  }
+  return `"${data}"`;
+}
+
 function parseDate(fecha) {
   //Funcion que convierte la fecha en un formato legible de la base de datos
+  if (fecha == ``) {
+    return null;
+  }
   let day = "";
   let month = "";
   let year = "";
@@ -126,12 +137,15 @@ function parseDate(fecha) {
       year += fecha.charAt(i);
     }
   }
-  fecha = `${year}-${month}-${day}`;
+  fecha = `"${year}-${month}-${day}"`;
   return fecha;
 }
 
 function parseTime(hora) {
   //Funcion que convierte la hora en un formato legible de la base de datos
+  if (hora == ``) {
+    return null;
+  }
   let hour = "";
   let min = "";
   let period = "";
@@ -150,12 +164,29 @@ function parseTime(hora) {
   if (period.charAt(1) == `P`) {
     hour = parseInt(hour, 10) + 12;
   }
-  hora = `${hour}:${min}`;
+  hora = `"${hour}:${min}"`;
   return hora;
-}
+} // hh:mm
 
-//getClientProj("Winning Solutions INC");
-simpleSearch(2, getCurrentIndex());
+function parseTags(tag) {
+  if (tag == ``) {
+    return null;
+  }
+  var t = ``;
+  let st = true;
+  for (let i = 0; i < tag.length; i++) {
+    if (st == true) {
+      if (tag.charAt(i) == `,`) {
+        st = false;
+      }
+      t += tag.charAt(i);
+    } else {
+      st = true;
+    }
+  }
+  t = `"${t}"`;
+  return t;
+}
 
 function printData(...args) {
   // Funcion de prueba para leer el excel
@@ -174,7 +205,7 @@ function printData(...args) {
   }
 }
 
-/*function getClientProj(client) {
+function getClientProj(client) {
   // Funcion de prueba para leer el excel
   //Obtiene todas las tuplas de un cliente especifico
   newArrVal();
@@ -187,9 +218,8 @@ function printData(...args) {
     index++;
   }
   printData(proyecto, cliente, usuario, tags, fechaIn, horaIn, duracion);
-}*/
+}
 
-//getCurrentIndex();
-//await simpleSearch(2, 20);
-//await db.getRow();
+//getClientProj("Winning Solutions INC");
+simpleSearch(2, getCurrentIndex());
 await db.stop();
