@@ -15,7 +15,7 @@ const connection = await mysql.createConnection({
   database: config.db.baseDatos,
 });
 
-export async function getRow() {
+export async function getRow(client) {
   let [rows, fields] = connection.execute(`SELECT * FROM reporte`);
   //`SELECT * FROM reporte WHERE cliente != ${client};`
   logger.debug(JSON.stringify(rows, null, 4));
@@ -28,12 +28,12 @@ export async function stop() {
 /*var proyecto = "P5";
 var cliente = "C4";
 var usuario = "Roberto";
-var tags = null;
+var tags = `Junta,Interno`;
 var fechaInicio = "2023-07-13";
 var fechaFin = "2023-07-13";
 var tiempoInicio = "13:20";
 var tiempoFinal = "17:00";
-var durecion = null;*/
+var duracion = "00:01";*/
 // FALTA DURACION
 //Checar valor null
 export async function addRow(
@@ -45,17 +45,16 @@ export async function addRow(
   fechaFin,
   tiempoInicio,
   tiempoFinal,
-  durecion
+  duracion,
+  index
 ) {
   connection.execute(
-    `INSERT INTO reporte (proyecto, cliente, usuario, tags, fechaInicio, fechaFin, tiempoInicio, tiempoFinal) 
-    VALUES("${proyecto}", "${cliente}", "${usuario}", null, "${fechaInicio}", "${fechaFin}", "${tiempoInicio}", "${tiempoFinal}")`
+    `INSERT INTO reporte (proyecto, cliente, usuario, tags, fechaInicio, fechaFin, tiempoInicio, tiempoFinal, duracion) 
+    VALUES(${proyecto}, ${cliente}, ${usuario}, ${tags}, ${fechaInicio}, ${fechaFin}, ${tiempoInicio}, ${tiempoFinal}, ${duracion})`
   );
 }
 
 /*
 let [rows, fields] = await connection.execute(`SELECT * FROM reporte`);
 logger.debug(JSON.stringify(rows, null, 4));
-
-await connection.end();
-*/
+await connection.end();*/
