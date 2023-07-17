@@ -64,10 +64,10 @@ function simpleSearch(min, max) {
   );
 }
 
-async function getClientProj(client) {
+/*async function getClientProj(client) {
   //Obtiene todas las tuplas de un cliente especifico
   db.getRow(client);
-}
+}*/
 
 function getCurrentIndex() {
   // Cuenta cual es la tupla actual vacia
