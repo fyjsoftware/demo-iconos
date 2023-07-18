@@ -97,6 +97,7 @@ function getCurrentIndex() {
 function sendData(...args) {
   // Funcion de prueba para comunicarse con la base de datos
   let index = 0;
+  let x = 0;
   for (let index = 0; index < proyecto.length; index++) {
     db.addRow(
       parseData(proyecto[index]),
@@ -161,8 +162,10 @@ function parseTime(hora) {
   }
   hour = hour.charAt(1) + hour.charAt(0);
   min = min.charAt(1) + min.charAt(0);
-  if (period.charAt(1) == `P`) {
+  if (period.charAt(1) == `P` && hour < 12) {
     hour = parseInt(hour, 10) + 12;
+  } else if (period.charAt(1) == `A` && hour == 12) {
+    hour = 0;
   }
   hora = `"${hour}:${min}"`;
   return hora;
