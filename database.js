@@ -48,7 +48,19 @@ export async function registrar(usuario, password, email) {
 
 export async function mostrar() {
     const [resultados] = await database.execute('SELECT * from reporte');
-    return resultados;
+    let newR = resultados;
+    for (var i = 0; i < newR.length; i++) {
+        newR[i].tags = (newR[i].tags === null ? "" : newR[i].tags.replaceAll(",", "<br>"));
+        newR[i].fechaInicio = newR[i].fechaInicio.toLocaleDateString("en-US");
+        newR[i].fechaFin = newR[i].fechaFin.toLocaleDateString("en-US");
+        newR[i].tiempoInicio = new Date(resultados[i].fechaInicio + ", " + newR[i].tiempoInicio).toLocaleTimeString("en-US",
+            {hour: '2-digit', minute: '2-digit'});
+        newR[i].tiempoFinal = new Date(resultados[i].fechaFin + ", " + newR[i].tiempoFinal).toLocaleTimeString("en-US",
+            {hour: '2-digit', minute: '2-digit'});
+        newR[i].duracion = new Date("1970-01-01, " + newR[i].duracion).toLocaleTimeString("es-MX",
+            {hour: '2-digit', minute: '2-digit'});
+    }
+    return newR;
 }
 
 export async function convertir(str) {
