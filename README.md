@@ -1,3 +1,7 @@
-Proyeto de carrera para la empresa ICONOS.
+# Proyecto ICONOS
+***Versión: 0.1, 20 de julio de 2023***
 
-Más tarde se escribirá más información.
+## Autores
+| Fernanda García | Fernanda Rodríguez | Jorge Rosales | Yahir Saavedra |
+| ------------- | ------------- | ------------- | ------------- |
+| ![](https://gcdnb.pbrd.co/images/CfoXCusYXj1f.webp?o=1)  | ![](https://gcdnb.pbrd.co/images/spAXpyrFE5pW.webp?o=1)  | ![](https://gcdnb.pbrd.co/images/s6LWMcbKF4tB.webp?o=1)  | ![](https://gcdnb.pbrd.co/images/ewIGKRNwMbrV.webp?o=1)  |
