@@ -11,24 +11,24 @@ const ws = wb1.Sheets["Detailed Report"]; // Hoja del archivo a leer
 
 var proyecto; // Falta Descripcion
 var cliente;
-var usuario;
+var desarrollador;
 var tags;
 var fechaIn;
-var fechaFin;
-var horaIn;
-var horaFin;
+//var fechaFin;
+//var horaIn;
+//var horaFin;
 var duracion;
 
 function newArrVal() {
   // Falta Descripcion
   proyecto = [];
   cliente = [];
-  usuario = [];
+  desarrollador = [];
   tags = [];
   fechaIn = [];
-  fechaFin = [];
-  horaIn = [];
-  horaFin = [];
+  //fechaFin = [];
+  //horaIn = [];
+  //horaFin = [];
   duracion = [];
 }
 
@@ -36,30 +36,31 @@ function getData(index) {
   // Manda los datos que estan en el indice a los arreglos | Falta descripcion
   proyecto.push(ws[`A${index}`].v);
   cliente.push(ws[`B${index}`].v);
-  usuario.push(ws[`E${index}`].v);
+  desarrollador.push(ws[`E${index}`].v);
   tags.push(ws[`H${index}`].v);
   fechaIn.push(ws[`J${index}`].v);
-  fechaFin.push(ws[`L${index}`].v);
-  horaIn.push(ws[`K${index}`].v);
-  horaFin.push(ws[`M${index}`].v);
-  duracion.push(ws[`N${index}`].v);
+  //fechaFin.push(ws[`L${index}`].v);
+  //horaIn.push(ws[`K${index}`].v);
+  //horaFin.push(ws[`M${index}`].v);
+  duracion.push(ws[`O${index}`].v);
 }
 
 function simpleSearch(min, max) {
   // Funcion De Busqueda entre 2 valores de todo el excel [El valor  `min` deber ser 2 o mayor ya que es valor de la hoha donde empiezan los datos]
   newArrVal();
+  //db.Total(max - 2);
   for (let index = min; index < max; index++) {
     getData(index);
   }
   sendData(
     proyecto,
     cliente,
-    usuario,
+    desarrollador,
     tags,
     fechaIn,
-    fechaFin,
-    horaIn,
-    horaFin,
+    //fechaFin,
+    //horaIn,
+    //horaFin,
     duracion
   );
 }
@@ -74,9 +75,6 @@ function getCurrentIndex() {
   var indexVal = 1000;
   var index = indexVal;
   var it = 0;
-  var a1;
-  var a2;
-  var a3;
   while (indexVal > 1) {
     if (
       ws[`J${index}`]?.v != undefined ||
@@ -96,26 +94,25 @@ function getCurrentIndex() {
 
 function sendData(...args) {
   // Funcion de prueba para comunicarse con la base de datos
-  let index = 0;
-  let x = 0;
   for (let index = 0; index < proyecto.length; index++) {
     db.addRow(
       parseData(proyecto[index]),
       parseData(cliente[index]),
-      parseData(usuario[index]),
+      parseData(desarrollador[index]),
       parseTags(tags[index]),
       parseDate(fechaIn[index]),
-      parseDate(fechaFin[index]),
-      parseTime(horaIn[index]),
-      parseTime(horaFin[index]),
-      parseData(duracion[index]),
-      index + 1
+      //parseDate(fechaFin[index]),
+      //parseTime(horaIn[index]),
+      //parseTime(horaFin[index]),
+      parseData(duracion[index])
+      //index + 1
     );
+    db.percent(index + 1, proyecto.length - 1);
   }
 }
 
 function parseData(data) {
-  if (data == ``) {
+  if (data == `` && data != 0) {
     return null;
   }
   return `"${data}"`;
@@ -199,10 +196,10 @@ function printData(...args) {
     console.log({
       proyecto: proyecto[index],
       cliente: cliente[index],
-      usuario: usuario[index],
+      desarrollador: desarrollador[index],
       tags: tags[index],
       fechaIn: fechaIn[index],
-      horaIn: horaIn[index],
+      //horaIn: horaIn[index],
       duracion: duracion[index],
     });
   }
@@ -220,9 +217,9 @@ function getClientProj(client) {
     }
     index++;
   }
-  printData(proyecto, cliente, usuario, tags, fechaIn, horaIn, duracion);
+  printData(proyecto, cliente, desarrollador, tags, fechaIn, duracion);
 }
 
 //getClientProj("Winning Solutions INC");
-simpleSearch(2, getCurrentIndex());
+await simpleSearch(2, getCurrentIndex());
 await db.stop();
