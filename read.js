@@ -14,9 +14,6 @@ var cliente;
 var desarrollador;
 var tags;
 var fechaIn;
-//var fechaFin;
-//var horaIn;
-//var horaFin;
 var duracion;
 
 function newArrVal() {
@@ -26,9 +23,6 @@ function newArrVal() {
   desarrollador = [];
   tags = [];
   fechaIn = [];
-  //fechaFin = [];
-  //horaIn = [];
-  //horaFin = [];
   duracion = [];
 }
 
@@ -39,36 +33,17 @@ function getData(index) {
   desarrollador.push(ws[`E${index}`].v);
   tags.push(ws[`H${index}`].v);
   fechaIn.push(ws[`J${index}`].v);
-  //fechaFin.push(ws[`L${index}`].v);
-  //horaIn.push(ws[`K${index}`].v);
-  //horaFin.push(ws[`M${index}`].v);
   duracion.push(ws[`O${index}`].v);
 }
 
 function simpleSearch(min, max) {
   // Funcion De Busqueda entre 2 valores de todo el excel [El valor  `min` deber ser 2 o mayor ya que es valor de la hoha donde empiezan los datos]
   newArrVal();
-  //db.Total(max - 2);
   for (let index = min; index < max; index++) {
     getData(index);
   }
-  sendData(
-    proyecto,
-    cliente,
-    desarrollador,
-    tags,
-    fechaIn,
-    //fechaFin,
-    //horaIn,
-    //horaFin,
-    duracion
-  );
+  sendData(proyecto, cliente, desarrollador, tags, fechaIn, duracion);
 }
-
-/*async function getClientProj(client) {
-  //Obtiene todas las tuplas de un cliente especifico
-  db.getRow(client);
-}*/
 
 function getCurrentIndex() {
   // Cuenta cual es la tupla actual vacia
@@ -101,11 +76,7 @@ function sendData(...args) {
       parseData(desarrollador[index]),
       parseTags(tags[index]),
       parseDate(fechaIn[index]),
-      //parseDate(fechaFin[index]),
-      //parseTime(horaIn[index]),
-      //parseTime(horaFin[index]),
       parseData(duracion[index])
-      //index + 1
     );
     db.percent(index + 1, proyecto.length - 1);
   }
@@ -199,7 +170,6 @@ function printData(...args) {
       desarrollador: desarrollador[index],
       tags: tags[index],
       fechaIn: fechaIn[index],
-      //horaIn: horaIn[index],
       duracion: duracion[index],
     });
   }
