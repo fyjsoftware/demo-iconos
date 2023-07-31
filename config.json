@@ -1,5 +1,7 @@
 {
+    "testing": true,
     "host": "",
+    "hostSecundario": "",
     "puertos": {
         "http": 80,
         "db": 3306
