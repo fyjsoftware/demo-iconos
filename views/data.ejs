@@ -7,7 +7,7 @@
         font-family: "Verdana", cursive, sans-serif;
     }
 
-    thead, tfoot {
+    thead {
         font-weight: bold;
     }
 
@@ -37,7 +37,8 @@
 
 <body>
     <h3>Proyecto ICONOS</h3>
-    <p><i>Resultados de la búsqueda: <%= resultado.datos.length %></i></p>
+    <p><i><b>Resultados de la búsqueda</b>: <%= resultado.datos.length %></i></p>
+    <p><i><b>Duración total</b>: <%= resultado.duracion %> horas</i></p>
     <button onclick="compartir()">Compartir</button>
     <button onclick="eliminar()">Eliminar</button>
     <a href="/">
@@ -68,13 +69,6 @@
                 </tr>
             <% }; %>
         </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="5"></td>
-                <td>Duración total</td>
-                <td><%= resultado.duracion %></td>
-            </tr>
-        </tfoot>
     </table>
 </body>
 
