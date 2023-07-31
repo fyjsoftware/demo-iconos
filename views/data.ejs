@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<style>
+    html * {
+        font-family: "Verdana", cursive, sans-serif;
+    }
+
+    thead, tfoot {
+        font-weight: bold;
+    }
+
+    td {
+        border-style: solid;
+        border-width: 1px;
+        font-size: 14px;
+        overflow: hidden;
+        padding: 10px 5px;
+        text-align: center;
+        vertical-align: middle
+    }
+</style>
+<script>
+    function compartir() {
+        window.prompt("Por favor, copie el siguiente enlace para compartir su reporte de tiempo.", document.location.href.split(/[?#]/)[0]);
+    }
+    function eliminar() {
+        if (window.confirm("¿Está seguro que desea eliminar su reporte? Esta acción es irreversible.")) {
+            window.location = window.location.origin + '/delete/' + window.location.pathname.split("/")[1];
+        }
+    }
+</script>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <title>Proyecto ICONOS</title>
+</head>
+
+<body>
+    <h3>Proyecto ICONOS</h3>
+    <p><i>Resultados de la búsqueda: <%= resultado.datos.length %></i></p>
+    <button onclick="compartir()">Compartir</button>
+    <button onclick="eliminar()">Eliminar</button>
+    <a href="/">
+        <button>Volver al inicio</button>
+    </a>
+    <table>
+        <thead>
+            <tr>
+                <td rowspan="2">ID</td>
+                <td rowspan="2">Desarrollador</td>
+                <td rowspan="2">Cliente</td>
+                <td rowspan="2">Proyecto</td>
+                <td rowspan="2">Etiquetas</td>
+                <td rowspan="2">Fecha de inicio</td>
+                <td rowspan="2">Duración</td>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (var i = 0; i < resultado.datos.length; i++) { %>
+                <tr>
+                    <td><%- resultado.datos[i].idReporte %></td>
+                    <td><%- resultado.datos[i].desarrollador %></td>
+                    <td><%- resultado.datos[i].cliente %></td>
+                    <td><%- resultado.datos[i].proyecto %></td>
+                    <td><%- resultado.datos[i].tags %></td>
+                    <td><%- resultado.datos[i].fechaInicio %>
+                    <td><%- resultado.datos[i].duracion %></td>
+                </tr>
+            <% }; %>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5"></td>
+                <td>Duración total</td>
+                <td><%= resultado.duracion %></td>
+            </tr>
+        </tfoot>
+    </table>
+</body>
+
+</html>
