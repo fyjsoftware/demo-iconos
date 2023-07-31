@@ -134,3 +134,11 @@ config.json
 
 # PROYECTO: No subir archivos caché del logger
 .*.json
+
+# PROYECTO: No subir archivos temporales ni de Excel
+*.xlsx
+temp/
+
+# PROYECTO: No subir archivos shell para ejecutar el programa
+*.sh
+*.bat

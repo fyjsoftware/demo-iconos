@@ -1,10 +1,13 @@
 import * as logger from "./logger.js";
 import * as db from "./database.js";
+import * as excel from "./excel.js";
 import express from "express";
+import multer from "multer";
 import * as fs from "fs/promises";
-import session from "express-session";
+import favicon from "serve-favicon";
 import path from "path";
 import {fileURLToPath} from "url";
+import { execFile } from "child_process";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,82 +18,98 @@ const config = JSON.parse(
 
 const app = express();
 
-app.use(session({
-	secret: 'secret',
-	resave: true,
-	saveUninitialized: true
-}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/static"));
+app.use(favicon(__dirname + '/static/favicon.ico'));
 app.set('views', __dirname + '/views');
 app.set("view engine", "ejs");
 
+var storage = await multer.diskStorage({  
+    destination: async function (req, file, callback) {  
+      callback(null, __dirname + '/temp');  
+    },  
+    filename: async function (req, file, callback) {  
+      callback(null, file.originalname);  
+    }  
+  });  
+  var upload = await multer({storage : storage}).single('archivo');  
+
 export async function iniciar() {
     app.get("/", async function (request, response) {
-        if (request.session.loggedin) {
-            await response.render('home', {
-                usuario: request.session.username,
-                resultado: await db.mostrar()
-            });
-        } else {
-            await response.sendFile(__dirname + "/static/login.html");
-        }
+        await response.sendFile(__dirname + "/static/upload.html");
     });
 
-    app.get("/register", async function (request, response) {
-        if (request.session.loggedin) {
-            await response.send('Ya iniciaste sesión.');
-        } else {
-            await response.sendFile(__dirname + "/static/register.html");
-        }
-    });
-
-    app.get('/logout', async function (request, response) {
-        await request.session.destroy();
-        await response.redirect('/');
-    });
-
-    app.post('/auth', async function(request, response) {
-        let username = request.body.username;
-        let password = await db.convertir(request.body.password);
-        if (username && password) {
-            let correcto = await db.login(username, password);
-            if (correcto) {
-                request.session.loggedin = true;
-                request.session.username = username;
-                await response.redirect('/');
-            } else {
-                await response.send('Usuario o contraseña incorrecta.');
-            }
-        } else {
-            await response.send('Por favor, ingresa tu usuario y contraseña.');
-        }
-    });
-
-    app.post('/add', async function(request, response) {
-        let username = request.body.username;
-        let password = request.body.password;
-        let email = request.body.email;
-        let validarEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-        if (username && password && email) {
-            let existe = await db.existe(username, email);
-            if (existe) {
-                await response.send('Esta cuenta ya está registrada. Por favor, inicie sesión.');
-            } else if (password.length < 8) {
-                await response.send('La contraseña ingresada debe tener por lo menos 8 caracteres. Por favor, intente de nuevo.')
-            } else if (!validarEmail.test(email)) {
-                await response.send('El correo electrónico ingresado no es válido. Por favor, intente de nuevo.');
-            } else {
-                let exitoso = await db.registrar(username, await db.convertir(password), await db.convertir(email));
-                if (exitoso) {
-                    await response.send('Su cuenta ha sido registrada. Por favor, regrese a la página de inicio e inicie sesión.');
+    app.get("/:tabla", async function (request, response) {
+        try {
+            try {
+                await fs.stat(__dirname + '/temp/' + request.params.tabla + '_loading');
+                await response.render('warning', {
+                    texto: "El reporte ha sido cargado al sistema. Por favor, espere unos minutos a que se termine de subir y revise nuevamente.<br><br><b>Progreso de subida</b>: " + await fs.readFile(new URL("./temp/" + request.params.tabla + '_loading', import.meta.url))
+                });
+            } catch (err) {
+                if (err.code = 'ENOENT') {
+                    await response.render('data', {
+                        resultado: await db.mostrar(request.params.tabla)
+                    });
                 } else {
-                    await response.send('Ocurrió un error al registrar su cuenta. Por favor, contacte con el administrador.');
+                    await response.render('error', {
+                        error: error
+                    });
                 }
             }
-        } else {
-            await response.send('Por favor, ingrese todos los datos correspondientes.');
+            
+        } catch (error) {
+            if (error.stack.includes("doesn't exist")) {
+                await response.render('warning', {
+                    texto: "El reporte al que intenta acceder no existe. Por favor, verifique que haya escrito el enlace correctamente."
+                });
+            } else {
+                logger.error(error.stack);
+                await response.render('error', {
+                    error: error
+                });
+            }
+        }
+    });
+
+    app.get('/delete/:tabla', async function (request, response){  
+        try {
+            await db.eliminar(request.params.tabla);
+            await response.redirect('/');
+        } catch (error) {
+            logger.error(error.stack);
+            await response.render('error', {
+                error: error
+            });
+        }
+    });  
+
+    app.post('/upload', async function (request, response){  
+        try {
+            await upload(request, response, async function (error) {
+                if (error) {  
+                    await limpiarTemp();
+                    throw error;
+                }
+                if (!request.file.originalname.endsWith(".xlsx")) {
+                    await limpiarTemp();
+                    throw new Error("El archivo que subió no es un archivo formato Excel. Por favor, intente con otro archivo.");
+                }
+                let codigo = await db.generarCodigo();
+                const fd = await fs.open(__dirname + "/temp/" + codigo + "_loading", 'w');
+                await fs.writeFile(__dirname + "/temp/" + codigo + "_loading", '0.00%');
+                await fd.close();
+                
+                await response.redirect('/' + codigo);
+                await db.crear(codigo, await excel.leer(request.file.originalname));
+                await limpiarTemp();
+            });
+        } catch (error) {
+            logger.error(error.stack);
+            await response.render('error', {
+                error: error
+            });
         }
     });
 
@@ -104,3 +123,11 @@ export async function iniciar() {
 app.on('error', (err) => {
 	throw err;
 });
+
+async function limpiarTemp() {
+    const archivos = await fs.readdir(__dirname + '/temp');
+    for (const archivo of archivos) {
+        await fs.unlink(path.resolve(__dirname + '/temp', archivo));
+    }
+    logger.info("Limpieza de la carpeta temporal completa");
+}
