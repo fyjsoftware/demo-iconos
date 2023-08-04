@@ -10,10 +10,6 @@ const config = JSON.parse(
 process.title = "Proyecto ICONOS";
 
 try {
-	logger.info(
-		"Configuración establecida:\n\n" + JSON.stringify(config, null, 4)
-	);
-	
 	await server.iniciar();
 } catch (e) {
 	logger.error(

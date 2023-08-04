@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			html * {
+				font-family: "Verdana", cursive, sans-serif;
+			}
+		</style>
+		<script>
+			function copiar() {
+				let t = document.getElementById("error");
+
+				t.select();
+				t.setSelectionRange(0, 99999);
+				navigator.clipboard.writeText(t.value);
+			}
+		</script>
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+		<title>Proyecto ICONOS</title>
+	</head>
+	<body>
+		<h3>ERROR</h3>
+		<p>
+			Ocurrió un error al procesar su solicitud. Por favor, contacte al
+			administrador.
+		</p>
+		<textarea rows="12" cols="100" id="error" readonly>
+<%= error.stack %></textarea
+		><br />
+		<a href="/">
+			<button>Volver al inicio</button>
+		</a>
+	</body>
+</html>
