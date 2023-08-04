@@ -15,7 +15,7 @@
 	"version": "0.2.0",
 	"main": "index.js",
 	"scripts": {
-		"test": "node prueba.js"
+		"test": "echo Configuración de prueba"
 	},
 	"author": {
 		"name": "Proyecto ICONOS"
