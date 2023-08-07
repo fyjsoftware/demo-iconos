@@ -1,14 +1,14 @@
 {
-    "testing": true,
-    "host": "",
-    "hostSecundario": "",
-    "puertos": {
-        "http": 80,
-        "db": 3306
-    },
-    "db": {
-        "usuario": "",
-        "password": "",
-        "baseDatos": ""
-    }
+  "testing": true,
+  "host": "127.0.0.1",
+  "hostSecundario": "",
+  "puertos": {
+    "http": 80,
+    "db": 3306
+  },
+  "db": {
+    "usuario": "root",
+    "password": "",
+    "baseDatos": "sistema"
+  }
 }
