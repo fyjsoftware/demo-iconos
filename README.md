@@ -1,5 +1,5 @@
 # Proyecto ICONOS
-***Versión: 0.2, 03 de agosto de 2023***
+***Versión: 0.2.1, 09 de agosto de 2023***
 
 ## Autores
 | Fernanda García | Fernanda Rodríguez | Jorge Rosales | Yahir Saavedra |
