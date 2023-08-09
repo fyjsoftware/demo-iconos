@@ -55,7 +55,18 @@
       			document.getElementById("cliente").disabled = true;
       		}
       	});
-        document.getElementById("total").innerHTML = document.getElementsByName("idReporte").length;
+        document.getElementById("filtroDur").addEventListener("click", (event) => {
+          let value = "";
+      		if (event.target.checked) {
+      			value = "true";
+      		} else {
+      			value = "false";
+      		}
+          for (let i = 0; i < value.length; i++) {
+            document.getElementById("st").innerHTML += "<option value=\"" + value.charAt(i) + "\"></option>" 
+          }
+      	});
+        document.getElementById("total").innerHTML = document.getElementsByName("duracion").length;
         let duracion = document.getElementsByName("duracion");
         let df = 0;
         for (let i = 0; i < duracion.length; i++) {
@@ -74,6 +85,7 @@
             document.getElementById("clientes").innerHTML += "<option value=\"" + clientes[i] + "\"></option>"
         }
       });
+
 
       function compartir() {
       	window.prompt(
@@ -124,45 +136,68 @@
         disabled
       />
       <datalist id="clientes"> </datalist>
-      </a><input type="checkbox" id="filtroDur" /> <!-- Checkbox del fitro de duración total -->
+      </a><input type="checkbox" id="filtroDur" name="filtroDur" list="st"/> <!-- Checkbox del fitro de duración total (Aun no es funcional) -->
       Filtrar duracion total de desarrolladores
       <input type="submit" id="buscar" value="Buscar" />
     </form>
     <br />
     <% if (resultado.length > 0) { %>
-    <p class="datos">
-      <i><b>Resultados de la búsqueda</b>:
-        <div class="datos" id="total">⌛</div></i> <!-- Por arreglar, el valor total de resultado no lo arroja-->
-      |
-      <i><b>Duración total</b>:
-        <div class="datos" id="duracion">⌛</div></i>
-    </p>
-    <div class="tabla">
-      <table>
-        <thead>
-          <tr>
-            <th rowspan="2">Desarrollador</th>
-            <th rowspan="2">Cliente</th>
-            <th rowspan="2">Proyecto</th>
-            <th rowspan="2">Etiquetas</th>
-            <th rowspan="2">Fecha de inicio</th>
-            <th rowspan="2">Duración</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% for (var i = 0; i < resultado.length; i++) { %>
-          <tr>
-            <td name="desarrollador"><%- resultado[i].desarrollador %></td>
-            <td name="cliente"><%- resultado[i].cliente %></td>
-            <td name="proyecto"><%- resultado[i].proyecto %></td>
-            <td name="tags"><%- resultado[i].tags %></td>
-            <td name="fechaInicio"><%- resultado[i].fechaInicio %></td>
-            <td name="duracion"><%- resultado[i].duracion %></td>
-          </tr>
-          <% }; %>
-        </tbody>
-      </table>
-    </div>
+      <p class="datos">
+        <i><b>Resultados de la búsqueda</b>:
+          <div class="datos" id="total">⌛</div></i> <!-- Por arreglar, el valor total de resultado no lo arroja-->
+        |
+        <i><b>Duración total</b>:
+          <div class="datos" id="duracion">⌛</div></i>
+      </p>
+      <div class="tabla">
+        <table>
+          <% if (durTotal == false) { %>
+          <thead>
+            <tr>
+              <th rowspan="2">Desarrollador</th>
+              <th rowspan="2">Cliente</th>
+              <th rowspan="2">Proyecto</th>
+              <th rowspan="2">Etiquetas</th>
+              <th rowspan="2">Fecha de inicio</th>
+              <th rowspan="2">Duración</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (var i = 0; i < resultado.length; i++) { %>
+            <tr>
+              <td name="desarrollador"><%- resultado[i].desarrollador %></td>
+              <td name="cliente"><%- resultado[i].cliente %></td>
+              <td name="proyecto"><%- resultado[i].proyecto %></td>
+              <td name="tags"><%- resultado[i].tags %></td>
+              <td name="fechaInicio"><%- resultado[i].fechaInicio %></td>
+              <td name="duracion"><%- resultado[i].duracion %></td>
+            </tr>
+            <% }; %>
+          </tbody>
+        </table>
+        <%} else { %>
+        <table>
+          <thead>
+            <tr>
+              <th rowspan="2">Desarrollador</th>
+              <th rowspan="2">Cliente</th>
+              <th rowspan="2">Proyecto</th>
+              <th rowspan="2">Duración</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (var i = 0; i < resultado.length; i++) { %>
+            <tr>
+              <td name="desarrollador"><%- resultado[i].desarrollador %></td>
+              <td name="cliente"><%- resultado[i].cliente %></td>
+              <td name="proyecto"><%- resultado[i].proyecto %></td>
+              <td name="duracion"><%- resultado[i].duracion %></td>
+            </tr>
+            <% }; %>
+          </tbody>
+        </table>
+        <% }; %>
+      </div>
     <%} else { %>
     <p>No se han encontrado resultados para su búsqueda</p>
     <% } %>
