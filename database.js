@@ -21,8 +21,6 @@ async function conexion() {
   });
 }
 
-/* Agregué un último argumento booleano el cual dependiendo si es verdadero o falso da la duracion total de los devs
-   También modifiqué ligeramente las consultas y dentro de estas use LIKE*/
 export async function mostrar(tabla, query, st) {
   let filtro = "";
   if (query.dev !== null && query.cliente === null) {
@@ -42,7 +40,7 @@ export async function mostrar(tabla, query, st) {
   let database = await conexion();
   let newR = null;
   if (st == false) {
-    const [resultados] = await database.execute(
+    let [resultados] = await database.execute(
       "SELECT desarrollador, cliente, proyecto, tags, fechaInicio, duracion from " +
         tabla +
         filtro +
@@ -50,7 +48,7 @@ export async function mostrar(tabla, query, st) {
     );
     newR = resultados;
   } else {
-    const [resultados] = await database.execute(
+    let [resultados] = await database.execute(
       "SELECT desarrollador, cliente, proyecto, SUM(duracion) AS duracion from " +
         tabla +
         filtro +

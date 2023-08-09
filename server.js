@@ -39,7 +39,7 @@ export async function iniciar() {
     await response.sendFile(__dirname + "/static/upload.html");
   });
 
-  app.get("/:tabla", async function (request, response) {
+  app.get("/show/:tabla", async function (request, response) {
     try {
       try {
         await fs.stat(__dirname + "/temp/" + request.params.tabla + "_loading");
@@ -61,16 +61,14 @@ export async function iniciar() {
               : null;
           let cliente =
             request.query.cliente !== undefined ? request.query.cliente : null;
-          let durTotal = request.query.filtroDur === "on" ? true : false;
+          let durTotal = request.query.filtro === "true" ? true : false;
           await response.render("data", {
             durTotal: durTotal,
-            tabla: request.params.tabla,
-            listas: await db.mostrarListas(request.params.tabla),
             resultado: await db.mostrar(
               request.params.tabla,
               { dev: dev, cliente: cliente },
               durTotal
-            ),
+            )
           });
         } else {
           await response.render("error", {
@@ -90,6 +88,20 @@ export async function iniciar() {
           error: error,
         });
       }
+    }
+  });
+
+  app.get("/:tabla", async function (request, response) {
+    try {
+      await response.render("search", {
+        tabla: request.params.tabla,
+        listas: await db.mostrarListas(request.params.tabla)
+      });
+    } catch (error) {
+      await logger.error(error.stack);
+      await response.render("error", {
+        error: error,
+      });
     }
   });
 
