@@ -1,7 +1,7 @@
 import * as logger from "./logger.js";
 import * as db from "./database.js";
 import * as excel from "./excel.js";
-import express from "express";
+import express, { query } from "express";
 import multer from "multer";
 import * as fs from "fs/promises";
 import favicon from "serve-favicon";
@@ -61,13 +61,15 @@ export async function iniciar() {
               : null;
           let cliente =
             request.query.cliente !== undefined ? request.query.cliente : null;
+          let durTotal = request.query.filtroDur === "on" ? true : false;
           await response.render("data", {
+            durTotal: durTotal,
             tabla: request.params.tabla,
             listas: await db.mostrarListas(request.params.tabla),
             resultado: await db.mostrar(
               request.params.tabla,
               { dev: dev, cliente: cliente },
-              false
+              durTotal
             ),
           });
         } else {
@@ -76,39 +78,6 @@ export async function iniciar() {
           });
         }
       }
-    } catch (error) {
-      if (error.stack.includes("doesn't exist")) {
-        await response.render("warning", {
-          texto:
-            "El reporte al que intenta acceder no existe. Por favor, verifique que haya escrito el enlace correctamente.",
-        });
-      } else {
-        await logger.error(error.stack);
-        await response.render("error", {
-          error: error,
-        });
-      }
-    }
-  });
-
-  // No se si el siguiente metodo sea lo correcto para mostrar la tabla de la duracion total
-  app.get("/:tabla1", async function (request, response) {
-    try {
-      let dev =
-        request.query.desarrollador !== undefined
-          ? request.query.desarrollador
-          : null;
-      let cliente =
-        request.query.cliente !== undefined ? request.query.cliente : null;
-      await response.render("data1", {
-        tabla: request.params.tabla1,
-        listas: await db.mostrarListas(request.params.tabla1),
-        resultado: await db.mostrar(
-          request.params.tabla1,
-          { dev: dev, cliente: cliente },
-          true
-        ),
-      });
     } catch (error) {
       if (error.stack.includes("doesn't exist")) {
         await response.render("warning", {
