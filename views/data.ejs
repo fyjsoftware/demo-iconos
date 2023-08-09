@@ -26,14 +26,7 @@
         background: white;
       }
 
-      .tabla {
-        width: 1050px;
-        height: 550px;
-        white-space: nowrap;
-        overflow-y: scroll;
-      }
-
-      .tabla thead th {
+      .tabla thead {
         position: sticky;
         top: 0;
       }
@@ -41,31 +34,7 @@
     <script>
       document.addEventListener("DOMContentLoaded", function (event) {
         const url = new URL(window.location.href);
-      	document.getElementById("filtroDevs").addEventListener("click", (event) => {
-      		if (event.target.checked) {
-      			document.getElementById("desarrollador").disabled = false;
-      		} else {
-      			document.getElementById("desarrollador").disabled = true;
-      		}
-      	});
-      	document.getElementById("filtroClientes").addEventListener("click", (event) => {
-      		if (event.target.checked) {
-      			document.getElementById("cliente").disabled = false;
-      		} else {
-      			document.getElementById("cliente").disabled = true;
-      		}
-      	});
-        document.getElementById("filtroDur").addEventListener("click", (event) => {
-          let value = "";
-      		if (event.target.checked) {
-      			value = "true";
-      		} else {
-      			value = "false";
-      		}
-          for (let i = 0; i < value.length; i++) {
-            document.getElementById("st").innerHTML += "<option value=\"" + value.charAt(i) + "\"></option>" 
-          }
-      	});
+
         document.getElementById("total").innerHTML = document.getElementsByName("duracion").length;
         let duracion = document.getElementsByName("duracion");
         let df = 0;
@@ -73,86 +42,27 @@
             df += Number(duracion[i].innerHTML);
         }
         document.getElementById("duracion").innerHTML = parseFloat(df).toFixed(2) + " horas";
-
-        let devs = <%- listas.devs %>;
-        let clientes = <%- listas.clientes %>;
-
-        for (let i = 0; i < devs.length; i++) {
-            document.getElementById("desarrolladores").innerHTML += "<option value=\"" + devs[i] + "\"></option>"
-        }
-
-        for (let i = 0; i < clientes.length; i++) {
-            document.getElementById("clientes").innerHTML += "<option value=\"" + clientes[i] + "\"></option>"
-        }
       });
-
-
-      function compartir() {
-      	window.prompt(
-      		"Por favor, copie el siguiente enlace para compartir su reporte de tiempo.",
-      		document.location.href.split(/[?#]/)[0]
-      	);
-      }
-      function eliminar() {
-      	if (
-      		window.confirm(
-      			"¿Está seguro que desea eliminar su reporte? Esta acción es irreversible."
-      		)
-      	) {
-      		window.location =
-      			window.location.origin +
-      			"/delete/" +
-      			window.location.pathname.split("/")[1];
-      	}
-      }
     </script>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <title>Proyecto ICONOS</title>
   </head>
 
   <body>
-    <h3>Proyecto ICONOS</h3>
-    <small>Reporte a consultar:
-      <div class="datos" id="tabla"><%- tabla %></div></small>
-    <a href="/"><button>Volver al inicio</button></a><br /><br />
-    <form action="/<%- tabla %>" method="get">
-      <input type="checkbox" id="filtroDevs" />
-      Filtrar por desarrollador
-      <input
-        id="desarrollador"
-        name="desarrollador"
-        list="desarrolladores"
-        placeholder="Escriba su busqueda aquí"
-        disabled
-      />
-      <datalist id="desarrolladores"> </datalist>
-      <input type="checkbox" id="filtroClientes" />
-      Filtrar por cliente
-      <input
-        id="cliente"
-        name="cliente"
-        list="clientes"
-        placeholder="Escriba su busqueda aquí"
-        disabled
-      />
-      <datalist id="clientes"> </datalist>
-      </a><input type="checkbox" id="filtroDur" name="filtroDur" list="st"/> <!-- Checkbox del fitro de duración total (Aun no es funcional) -->
-      Filtrar duracion total de desarrolladores
-      <input type="submit" id="buscar" value="Buscar" />
-    </form>
-    <br />
     <% if (resultado.length > 0) { %>
-      <p class="datos">
-        <i><b>Resultados de la búsqueda</b>:
-          <div class="datos" id="total">⌛</div></i> <!-- Por arreglar, el valor total de resultado no lo arroja-->
-        |
-        <i><b>Duración total</b>:
-          <div class="datos" id="duracion">⌛</div></i>
-      </p>
       <div class="tabla">
         <table>
-          <% if (durTotal == false) { %>
+          <% if (!durTotal) { %>
           <thead>
+            <tr>
+              <th colspan="6">
+                <i><b>Resultados de la búsqueda</b>:
+                  <div class="datos" id="total">⌛</div></i>
+                |
+                <i><b>Duración total</b>:
+                  <div class="datos" id="duracion">⌛</div></i>
+              </th>
+            </tr>
             <tr>
               <th rowspan="2">Desarrollador</th>
               <th rowspan="2">Cliente</th>
@@ -172,12 +82,21 @@
               <td name="fechaInicio"><%- resultado[i].fechaInicio %></td>
               <td name="duracion"><%- resultado[i].duracion %></td>
             </tr>
-            <% }; %>
+            <% } %>
           </tbody>
         </table>
         <%} else { %>
         <table>
           <thead>
+            <tr>
+              <th colspan="6">
+                <i><b>Resultados de la búsqueda</b>:
+                  <div class="datos" id="total">⌛</div></i>
+                |
+                <i><b>Duración total</b>:
+                  <div class="datos" id="duracion">⌛</div></i>
+              </th>
+            </tr>
             <tr>
               <th rowspan="2">Desarrollador</th>
               <th rowspan="2">Cliente</th>
@@ -196,14 +115,11 @@
             <% }; %>
           </tbody>
         </table>
-        <% }; %>
+        <% } %>
       </div>
     <%} else { %>
-    <p>No se han encontrado resultados para su búsqueda</p>
+    <p>No se han encontrado resultados para su búsqueda.</p>
     <% } %>
     </p>
-    <button onclick="compartir()">Compartir</button>
-    <button onclick="eliminar()">Eliminar</button>
-    <a href="/<%- tabla %>"><button>Reiniciar búsqueda</button></a> <!-- Por Quitar o Eliminar-->
   </body>
 </html>
