@@ -58,7 +58,6 @@ export async function leer(codigo, archivo) {
 
 	for (let i = 0; i < keys.length; i++) {
 		let temp = keys[i].replace(/[^0-9]/g, "");
-		console.log(temp);
 		if (!isNaN(temp) && !sum.includes(temp)) {
 			sum.push(temp);
 		} else {
